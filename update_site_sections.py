@@ -116,7 +116,8 @@ def refresh(page, hdr, photos=True, log=print):
     sections = _get(hdr, f"/shops/{SHOP_ID}/sections").get("results", [])
     by_title = {s["title"].strip().lower(): s for s in sections}
     per_tile = photos_setting(page)
-    rows, missing = [], []
+    rows, missing, errors = [], [], []
+    log(f"Found {len(sections)} Etsy sections; fetching {per_tile} top photo(s) per tile.")
 
     def fix(m):
         t = m.group(0)
@@ -126,17 +127,20 @@ def refresh(page, hdr, photos=True, log=print):
             missing.append(title)
             return t
         n = sec.get("active_listing_count", 0)
-        imgs, pick = _old_imgs(t), ""
+        imgs, pick, fetched = _old_imgs(t), "", 0
         if photos and n:
             try:
                 got = top_photos(hdr, sec["shop_section_id"], per_tile)
                 if got:
-                    imgs, pick = [u for u, _ in got], got[0][1]
+                    imgs, pick, fetched = [u for u, _ in got], got[0][1], len(got)
+                else:
+                    errors.append(f"{label}: Etsy returned no listings with photos")
             except Exception as ex:          # keep last week's photos rather than fail
-                log(f"  photos skipped for {title}: {ex}")
+                errors.append(f"{label}: {str(ex)[:160]}")
+                log(f"  PHOTOS FAILED for {label}: {ex}")
         href = f"{base}?section_id={sec['shop_section_id']}"
-        rows.append({"Section": title, "Listings": n, "Top Pick": pick, "Link": href})
-        log(f"  {label}: {n:,} listings" + (f", top pick \"{pick[:60]}\"" if pick else ""))
+        rows.append({"Section": title, "Listings": n, "Photos": fetched, "Top Pick": pick, "Link": href})
+        log(f"  {label}: {n:,} listings, {fetched} photo(s)" + (f", top pick \"{pick[:60]}\"" if pick else ""))
         return tile(title, label, href, f"{n:,}", imgs)
 
     page = TILE_RE.sub(fix, page)
@@ -149,7 +153,7 @@ def refresh(page, hdr, photos=True, log=print):
     on_page = {r["Section"].lower() for r in rows} | {x.lower() for x in missing}
     not_on_page = [s["title"] for s in sections if s["title"].strip().lower() not in on_page]
     return page, {"base": base, "total": total, "rows": rows, "missing": missing,
-                  "not_on_page": not_on_page, "photos_per_tile": per_tile}
+                  "not_on_page": not_on_page, "photos_per_tile": per_tile, "errors": errors}
 
 
 def main():
@@ -169,6 +173,8 @@ def main():
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(page)
     print(f"Updated {len(rep['rows'])} section tile(s) for {rep['base']}")
+    if rep["errors"]:
+        print("PHOTO PROBLEMS (those tiles kept their old picture):\n  " + "\n  ".join(rep["errors"]))
     if rep["missing"]:
         print("No Etsy section with these exact names (left unchanged):", ", ".join(rep["missing"]))
     if rep["not_on_page"]:
