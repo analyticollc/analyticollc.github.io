@@ -30,6 +30,7 @@
   .card h3 { margin: 0 0 6px; font-size: 1.05rem; color: var(--green); }
   .card p { margin: 0; color: var(--muted); font-size: .95rem; }
   .about { background: var(--soft); }
+  .about .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
   .contact a { color: var(--green); font-weight: 600; }
   footer { border-top: 1px solid #ddd; padding: 20px 0; color: var(--muted); font-size: .9rem; }
   footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
@@ -43,7 +44,7 @@
   <div class="wrap">
     <a class="brand" href="/">Analytico <span>LLC</span></a>
     <nav>
-      <a href="#about">About</a>
+      <a href="/about">About</a>
       <a href="#shop">Shop</a>
       <a href="#contact">Contact</a>
       <a href="/privacy">Privacy</a>
@@ -72,17 +73,11 @@
   </div>
 </section>
 
-<section id="about" class="about">
+<section class="about">
   <div class="wrap">
-    <h2><span class="bar"></span>About Analytico LLC</h2>
-    <p>Analytico LLC is a small, independent design shop. We create original artwork for the things people
-    love, from fishing and aviation to faith, family and favorite holidays, and put it on products that are
-    printed to order and shipped straight to you.</p>
-    <p>The shop was started by Bill Young, Ph.D., an engineer and analytics professor who enjoys turning ideas
-    into designs. That same analytics background shapes how we run the shop: we test, measure and keep
-    improving so the right design finds the right customer.</p>
-    <p>Our products are printed and shipped by our production partner, Printful, and sold through Etsy, so every
-    purchase comes with Etsy's buyer protection.</p>
+    <h2><span class="bar"></span>Who We Are</h2>
+    <p>Analytico LLC is a small, independent design shop. Every design is our own, printed to order and shipped straight to you.
+      <a href="/about" style="color:var(--green);font-weight:600">Read more about us</a></p>
   </div>
 </section>
 
@@ -98,7 +93,7 @@
 <footer>
   <div class="wrap">
     <span>&copy; 2026 Analytico LLC</span>
-    <span><a href="/privacy">Privacy Policy</a> &middot; <a href="https://analyticollc.etsy.com">Etsy Shop</a></span>
+    <span><a href="/about">About</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="https://analyticollc.etsy.com">Etsy Shop</a></span>
   </div>
 </footer>
 
