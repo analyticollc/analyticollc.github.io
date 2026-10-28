@@ -22,6 +22,8 @@
   .btn { display: inline-block; background: var(--green); color: #fff; padding: 13px 26px; border-radius: 6px;
          text-decoration: none; font-weight: 700; }
   .btn:hover { background: #009443; }
+  .btn.ghost { background: #fff; color: var(--ink); border: 2px solid #ccc; margin-left: 8px; }
+  .btn.ghost:hover { border-color: var(--green); color: var(--green); background: #fff; }
   section { padding: 48px 0; }
   h2 { font-size: 1.6rem; margin: 0 0 14px; }
   h2 .bar { display: inline-block; width: 34px; height: 4px; background: var(--red); vertical-align: middle; margin-right: 10px; }
@@ -29,6 +31,16 @@
   .card { background: var(--soft); border-radius: 8px; padding: 18px; }
   .card h3 { margin: 0 0 6px; font-size: 1.05rem; color: var(--green); }
   .card p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .shopall { margin: 16px 0 6px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn.alt { background: var(--red); }
+  .btn.alt:hover { background: #a00000; }
+  .grp { margin: 26px 0 10px; font-size: 1.05rem; color: var(--green); }
+  .secs { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+  .sec { display: flex; justify-content: space-between; align-items: center; background: var(--soft);
+         border: 1px solid #e3e8e5; border-radius: 6px; padding: 11px 14px; color: var(--ink);
+         text-decoration: none; font-weight: 600; }
+  .sec:hover { border-color: var(--green); color: var(--green); }
+  .sec span { font-weight: 400; color: var(--muted); font-size: .85rem; }
   .about { background: var(--soft); }
   .about .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
   .contact a { color: var(--green); font-weight: 600; }
@@ -57,19 +69,46 @@
     <h1>Custom Designs, Made To Order</h1>
     <p>Original print-on-demand apparel, stickers and gifts for hobbies, careers, holidays and the people you shop for.</p>
     <a class="btn" href="https://analyticollc.etsy.com">Visit Our Etsy Shop</a>
+    <a class="btn ghost" href="https://analyticollc.printful.me/">Friends &amp; Family Store</a>
   </div>
 </div>
 
 <section id="shop">
   <div class="wrap">
-    <h2><span class="bar"></span>What We Make</h2>
+    <h2><span class="bar"></span>Shop By Category</h2>
     <p>Every item is printed when you order it, so nothing sits in a warehouse and each piece is made fresh for you.</p>
-    <div class="grid">
-      <div class="card"><h3>All-Over Print Apparel</h3><p>Hoodies, dresses, jerseys, socks and more, printed edge to edge.</p></div>
-      <div class="card"><h3>Hawaiian Shirts</h3><p>Button-up aloha shirts in hundreds of original patterns.</p></div>
-      <div class="card"><h3>Tees, Polos And Hats</h3><p>Classic graphic tees, embroidered polos and caps.</p></div>
-      <div class="card"><h3>Baby, Stickers And Gifts</h3><p>Onesies, stickers and small gifts for every occasion.</p></div>
+    <p class="shopall"><a class="btn" href="https://www.etsy.com/shop/AnalyticoLLC">Shop All <span data-total>7,201</span> Designs</a></p>
+    <!--SECTIONS START-->
+    <h3 class="grp" id="all-over">All-Over Print</h3>
+    <div class="secs">
+      <a class="sec" data-section="All-Over Hawaiian Shirt" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=hawaiian+shirt">Hawaiian Shirts<span>1,692</span></a>
+      <a class="sec" data-section="All-Over Slim Fit Polos" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=slim+fit+polo">Slim Fit Polos<span>318</span></a>
+      <a class="sec" data-section="All-Over Hoodies" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+hoodie">Hoodies<span>297</span></a>
+      <a class="sec" data-section="All-Over Exercise Shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=exercise+shirt">Exercise Shirts<span>128</span></a>
+      <a class="sec" data-section="All-Over Skater Dress" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=skater+dress">Skater Dresses<span>104</span></a>
+      <a class="sec" data-section="All-Over Long Sleeves" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+long+sleeve">Long Sleeves<span>50</span></a>
+      <a class="sec" data-section="All-Over Socks" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=socks">Socks<span>27</span></a>
+      <a class="sec" data-section="All-Over Sweatshirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+sweatshirt">Sweatshirts<span>4</span></a>
+      <a class="sec" data-section="All-Over Other" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+print">Other All-Over<span>4</span></a>
     </div>
+    <h3 class="grp" id="classic">Classic Apparel</h3>
+    <div class="secs">
+      <a class="sec" data-section="Adult T-shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=t-shirt">Adult T-Shirts<span>4,096</span></a>
+      <a class="sec" data-section="Adult Sweatshirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=sweatshirt">Adult Sweatshirts<span>23</span></a>
+      <a class="sec" data-section="Youth T-shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=youth+t-shirt">Youth T-Shirts<span>27</span></a>
+    </div>
+    <h3 class="grp" id="embroidered">Embroidered</h3>
+    <div class="secs">
+      <a class="sec" data-section="Embroidered Hats" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=embroidered+hat">Embroidered Hats<span>185</span></a>
+      <a class="sec" data-section="Embroidered Polos" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=embroidered+polo">Embroidered Polos<span>26</span></a>
+    </div>
+    <h3 class="grp" id="more">Baby, Stickers And More</h3>
+    <div class="secs">
+      <a class="sec" data-section="Baby Onesies" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=onesie">Baby Onesies<span>52</span></a>
+      <a class="sec" data-section="Stickers" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=sticker">Stickers<span>145</span></a>
+      <a class="sec" data-section="Seasonal" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=seasonal">Seasonal<span>9</span></a>
+    </div>
+    <!--SECTIONS END-->
   </div>
 </section>
 
@@ -93,7 +132,7 @@
 <footer>
   <div class="wrap">
     <span>&copy; 2026 Analytico LLC</span>
-    <span><a href="/about">About</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="https://analyticollc.etsy.com">Etsy Shop</a></span>
+    <span><a href="/about">About</a> &middot; <a href="/privacy">Privacy Policy</a> &middot; <a href="https://analyticollc.etsy.com">Etsy Shop</a> &middot; <a href="https://analyticollc.printful.me/">Friends &amp; Family Store</a></span>
   </div>
 </footer>
 
