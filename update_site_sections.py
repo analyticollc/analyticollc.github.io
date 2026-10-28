@@ -1,7 +1,9 @@
 """Refreshes the homepage Shop By Category tiles from the real Etsy shop sections.
 
-For every tile it sets the section link and listing count, and picks one photo: the
-listing in that section with the most Etsy favorites.
+For every tile it sets the section link and listing count, and picks photos: the
+listings in that section with the most Etsy favorites. How many photos each tile shows
+(1 to 4, shown as a small collage when more than 1) is set in index.html itself, on
+<section id="shop" data-photos="4">, so GitHub and the Listadum app always agree.
 
 Runs weekly on GitHub (see .github/workflows/update-sections.yml) using two repo secrets,
 ETSY_KEYSTRING and ETSY_SHARED_SECRET. Also runs on your PC:
@@ -42,9 +44,9 @@ def _get(hdr, path, **params):
     r.raise_for_status()
 
 
-def top_photo(hdr, section_id):
-    """(image_url, listing_title) for the most-favorited active listing in a section."""
-    best = None
+def top_photos(hdr, section_id, n=1):
+    """[(image_url, listing_title), ...] for the n most-favorited active listings in a section."""
+    seen = []
     for page in range(MAX_PAGES):
         data = _get(hdr, f"/shops/{SHOP_ID}/shop-sections/listings",
                     shop_section_ids=section_id, limit=100, offset=page * 100)
@@ -52,19 +54,33 @@ def top_photo(hdr, section_id):
         for li in rows:
             if li.get("state", "active") != "active":
                 continue
-            score = (li.get("num_favorers") or 0, li.get("views") or 0)
-            if best is None or score > best[0]:
-                best = (score, li)
+            seen.append(((li.get("num_favorers") or 0, li.get("views") or 0), li))
         if len(rows) < 100:
             break
-    if not best:
-        return None, None
-    li = best[1]
-    imgs = _get(hdr, f"/listings/{li['listing_id']}/images").get("results", [])
-    if not imgs:
-        return None, None
-    img = min(imgs, key=lambda i: i.get("rank") or 99)
-    return img.get("url_570xN") or img.get("url_fullxfull"), li.get("title", "")
+    seen.sort(key=lambda x: x[0], reverse=True)
+    out = []
+    for _, li in seen:
+        if len(out) >= n:
+            break
+        imgs = _get(hdr, f"/listings/{li['listing_id']}/images").get("results", [])
+        if imgs:
+            img = min(imgs, key=lambda i: i.get("rank") or 99)
+            url = img.get("url_570xN") or img.get("url_fullxfull")
+            if url:
+                out.append((url, li.get("title", "")))
+    return out
+
+
+def photos_setting(page):
+    m = re.search(r'<section id="shop"[^>]*data-photos="(\d+)"', page)
+    return max(1, min(4, int(m.group(1)))) if m else 1
+
+
+def set_photos_setting(page, n):
+    n = max(1, min(4, int(n)))
+    if re.search(r'<section id="shop"[^>]*data-photos="\d+"', page):
+        return re.sub(r'(<section id="shop"[^>]*data-photos=")\d+(")', rf"\g<1>{n}\2", page)
+    return page.replace('<section id="shop">', f'<section id="shop" data-photos="{n}">', 1)
 
 
 def _label(tile):
@@ -75,16 +91,22 @@ def _label(tile):
     return htmlmod.unescape(m.group(1)).strip() if m else ""
 
 
-def _old_img(tile):
-    m = re.search(r'<img src="([^"]*)"', tile)
-    return m.group(1) if m else PLACEHOLDER
+def _old_imgs(tile):
+    found = [u for u in re.findall(r'<img src="([^"]*)"', tile) if u != PLACEHOLDER]
+    return found or [PLACEHOLDER]
 
 
-def tile(title, label, href, count, img):
+def tile(title, label, href, count, imgs):
     e = htmlmod.escape
+    imgs = [u for u in (imgs if isinstance(imgs, (list, tuple)) else [imgs]) if u][:4] or [PLACEHOLDER]
+    if len(imgs) == 1:
+        pics = f'<img src="{e(imgs[0])}" alt="{e(label)}" loading="lazy">'
+    else:
+        pics = (f'<div class="ph n{len(imgs)}">'
+                + "".join(f'<img src="{e(u)}" alt="{e(label)}" loading="lazy">' for u in imgs)
+                + "</div>")
     return (f'<a class="sec" data-section="{e(title)}" data-label="{e(label)}" href="{e(href)}">'
-            f'<img src="{e(img)}" alt="{e(label)}" loading="lazy">'
-            f'<b>{e(label)}</b><span>{count}</span></a>')
+            f'{pics}<b>{e(label)}</b><span>{count}</span></a>')
 
 
 def refresh(page, hdr, photos=True, log=print):
@@ -93,6 +115,7 @@ def refresh(page, hdr, photos=True, log=print):
     base = (shop.get("url") or f"https://www.etsy.com/shop/{shop.get('shop_name')}").split("?")[0]
     sections = _get(hdr, f"/shops/{SHOP_ID}/sections").get("results", [])
     by_title = {s["title"].strip().lower(): s for s in sections}
+    per_tile = photos_setting(page)
     rows, missing = [], []
 
     def fix(m):
@@ -103,17 +126,18 @@ def refresh(page, hdr, photos=True, log=print):
             missing.append(title)
             return t
         n = sec.get("active_listing_count", 0)
-        img, pick = _old_img(t), ""
+        imgs, pick = _old_imgs(t), ""
         if photos and n:
             try:
-                url, pick = top_photo(hdr, sec["shop_section_id"])
-                img = url or img
-            except Exception as ex:          # keep last week's photo rather than fail
-                log(f"  photo skipped for {title}: {ex}")
+                got = top_photos(hdr, sec["shop_section_id"], per_tile)
+                if got:
+                    imgs, pick = [u for u, _ in got], got[0][1]
+            except Exception as ex:          # keep last week's photos rather than fail
+                log(f"  photos skipped for {title}: {ex}")
         href = f"{base}?section_id={sec['shop_section_id']}"
         rows.append({"Section": title, "Listings": n, "Top Pick": pick, "Link": href})
-        log(f"  {label}: {n:,} listings" + (f", photo from \"{pick[:60]}\"" if pick else ""))
-        return tile(title, label, href, f"{n:,}", img)
+        log(f"  {label}: {n:,} listings" + (f", top pick \"{pick[:60]}\"" if pick else ""))
+        return tile(title, label, href, f"{n:,}", imgs)
 
     page = TILE_RE.sub(fix, page)
     page = re.sub(r'href="https://www\.etsy\.com/shop/[^"?]+"', f'href="{base}"', page)
@@ -124,7 +148,8 @@ def refresh(page, hdr, photos=True, log=print):
                   f"<span data-updated>{datetime.date.today().isoformat()}</span>", page)
     on_page = {r["Section"].lower() for r in rows} | {x.lower() for x in missing}
     not_on_page = [s["title"] for s in sections if s["title"].strip().lower() not in on_page]
-    return page, {"base": base, "total": total, "rows": rows, "missing": missing, "not_on_page": not_on_page}
+    return page, {"base": base, "total": total, "rows": rows, "missing": missing,
+                  "not_on_page": not_on_page, "photos_per_tile": per_tile}
 
 
 def main():
