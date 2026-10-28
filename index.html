@@ -38,12 +38,16 @@
   .btn.alt { background: var(--red); }
   .btn.alt:hover { background: #a00000; }
   .grp { margin: 26px 0 10px; font-size: 1.05rem; color: var(--green); }
-  .secs { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-  .sec { display: flex; justify-content: space-between; align-items: center; background: var(--soft);
-         border: 1px solid #e3e8e5; border-radius: 6px; padding: 11px 14px; color: var(--ink);
-         text-decoration: none; font-weight: 600; }
-  .sec:hover { border-color: var(--green); color: var(--green); }
-  .sec span { font-weight: 400; color: var(--muted); font-size: .85rem; }
+  .secs { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 14px; }
+  .sec { display: flex; flex-direction: column; background: #fff; border: 1px solid #e3e8e5; border-radius: 8px;
+         overflow: hidden; color: var(--ink); text-decoration: none; transition: border-color .15s, box-shadow .15s; }
+  .sec:hover { border-color: var(--green); box-shadow: 0 3px 10px rgba(0,0,0,.08); }
+  .sec img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: var(--soft); display: block; }
+  .sec img[src="/apple-touch-icon.png"] { object-fit: contain; padding: 28%; }
+  .sec b { padding: 10px 12px 0; font-size: .98rem; }
+  .sec:hover b { color: var(--green); }
+  .sec span { padding: 2px 12px 11px; font-weight: 400; color: var(--muted); font-size: .85rem; }
+  .sec span::after { content: " designs"; }
   .about { background: var(--soft); }
   .about .card { background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
   .contact a { color: var(--green); font-weight: 600; }
@@ -84,32 +88,32 @@
     <!--SECTIONS START-->
     <h3 class="grp" id="all-over">All-Over Print</h3>
     <div class="secs">
-      <a class="sec" data-section="All-Over Hawaiian Shirt" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=hawaiian+shirt">Hawaiian Shirts<span>1,692</span></a>
-      <a class="sec" data-section="All-Over Slim Fit Polos" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=slim+fit+polo">Slim Fit Polos<span>318</span></a>
-      <a class="sec" data-section="All-Over Hoodies" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+hoodie">Hoodies<span>297</span></a>
-      <a class="sec" data-section="All-Over Exercise Shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=exercise+shirt">Exercise Shirts<span>128</span></a>
-      <a class="sec" data-section="All-Over Skater Dress" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=skater+dress">Skater Dresses<span>104</span></a>
-      <a class="sec" data-section="All-Over Long Sleeves" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+long+sleeve">Long Sleeves<span>50</span></a>
-      <a class="sec" data-section="All-Over Socks" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=socks">Socks<span>27</span></a>
-      <a class="sec" data-section="All-Over Sweatshirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+sweatshirt">Sweatshirts<span>4</span></a>
-      <a class="sec" data-section="All-Over Other" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+print">Other All-Over<span>4</span></a>
+      <a class="sec" data-section="All-Over Hawaiian Shirt" data-label="Hawaiian Shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=hawaiian+shirt"><img src="/apple-touch-icon.png" alt="Hawaiian Shirts" loading="lazy"><b>Hawaiian Shirts</b><span>1,692</span></a>
+      <a class="sec" data-section="All-Over Slim Fit Polos" data-label="Slim Fit Polos" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=slim+fit+polo"><img src="/apple-touch-icon.png" alt="Slim Fit Polos" loading="lazy"><b>Slim Fit Polos</b><span>318</span></a>
+      <a class="sec" data-section="All-Over Hoodies" data-label="Hoodies" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+hoodie"><img src="/apple-touch-icon.png" alt="Hoodies" loading="lazy"><b>Hoodies</b><span>297</span></a>
+      <a class="sec" data-section="All-Over Exercise Shirts" data-label="Exercise Shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=exercise+shirt"><img src="/apple-touch-icon.png" alt="Exercise Shirts" loading="lazy"><b>Exercise Shirts</b><span>128</span></a>
+      <a class="sec" data-section="All-Over Skater Dress" data-label="Skater Dresses" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=skater+dress"><img src="/apple-touch-icon.png" alt="Skater Dresses" loading="lazy"><b>Skater Dresses</b><span>104</span></a>
+      <a class="sec" data-section="All-Over Long Sleeves" data-label="Long Sleeves" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+long+sleeve"><img src="/apple-touch-icon.png" alt="Long Sleeves" loading="lazy"><b>Long Sleeves</b><span>50</span></a>
+      <a class="sec" data-section="All-Over Socks" data-label="Socks" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=socks"><img src="/apple-touch-icon.png" alt="Socks" loading="lazy"><b>Socks</b><span>27</span></a>
+      <a class="sec" data-section="All-Over Sweatshirts" data-label="Sweatshirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+sweatshirt"><img src="/apple-touch-icon.png" alt="Sweatshirts" loading="lazy"><b>Sweatshirts</b><span>4</span></a>
+      <a class="sec" data-section="All-Over Other" data-label="Other All-Over" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=all+over+print"><img src="/apple-touch-icon.png" alt="Other All-Over" loading="lazy"><b>Other All-Over</b><span>4</span></a>
     </div>
     <h3 class="grp" id="classic">Classic Apparel</h3>
     <div class="secs">
-      <a class="sec" data-section="Adult T-shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=t-shirt">Adult T-Shirts<span>4,096</span></a>
-      <a class="sec" data-section="Adult Sweatshirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=sweatshirt">Adult Sweatshirts<span>23</span></a>
-      <a class="sec" data-section="Youth T-shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=youth+t-shirt">Youth T-Shirts<span>27</span></a>
+      <a class="sec" data-section="Adult T-shirts" data-label="Adult T-Shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=t-shirt"><img src="/apple-touch-icon.png" alt="Adult T-Shirts" loading="lazy"><b>Adult T-Shirts</b><span>4,096</span></a>
+      <a class="sec" data-section="Adult Sweatshirts" data-label="Adult Sweatshirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=sweatshirt"><img src="/apple-touch-icon.png" alt="Adult Sweatshirts" loading="lazy"><b>Adult Sweatshirts</b><span>23</span></a>
+      <a class="sec" data-section="Youth T-shirts" data-label="Youth T-Shirts" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=youth+t-shirt"><img src="/apple-touch-icon.png" alt="Youth T-Shirts" loading="lazy"><b>Youth T-Shirts</b><span>27</span></a>
     </div>
     <h3 class="grp" id="embroidered">Embroidered</h3>
     <div class="secs">
-      <a class="sec" data-section="Embroidered Hats" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=embroidered+hat">Embroidered Hats<span>185</span></a>
-      <a class="sec" data-section="Embroidered Polos" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=embroidered+polo">Embroidered Polos<span>26</span></a>
+      <a class="sec" data-section="Embroidered Hats" data-label="Embroidered Hats" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=embroidered+hat"><img src="/apple-touch-icon.png" alt="Embroidered Hats" loading="lazy"><b>Embroidered Hats</b><span>185</span></a>
+      <a class="sec" data-section="Embroidered Polos" data-label="Embroidered Polos" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=embroidered+polo"><img src="/apple-touch-icon.png" alt="Embroidered Polos" loading="lazy"><b>Embroidered Polos</b><span>26</span></a>
     </div>
     <h3 class="grp" id="more">Baby, Stickers And More</h3>
     <div class="secs">
-      <a class="sec" data-section="Baby Onesies" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=onesie">Baby Onesies<span>52</span></a>
-      <a class="sec" data-section="Stickers" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=sticker">Stickers<span>145</span></a>
-      <a class="sec" data-section="Seasonal" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=seasonal">Seasonal<span>9</span></a>
+      <a class="sec" data-section="Baby Onesies" data-label="Baby Onesies" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=onesie"><img src="/apple-touch-icon.png" alt="Baby Onesies" loading="lazy"><b>Baby Onesies</b><span>52</span></a>
+      <a class="sec" data-section="Stickers" data-label="Stickers" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=sticker"><img src="/apple-touch-icon.png" alt="Stickers" loading="lazy"><b>Stickers</b><span>145</span></a>
+      <a class="sec" data-section="Seasonal" data-label="Seasonal" href="https://www.etsy.com/shop/AnalyticoLLC?search_query=seasonal"><img src="/apple-touch-icon.png" alt="Seasonal" loading="lazy"><b>Seasonal</b><span>9</span></a>
     </div>
     <!--SECTIONS END-->
   </div>
