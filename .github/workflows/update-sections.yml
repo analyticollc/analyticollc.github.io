@@ -1,0 +1,31 @@
+name: Update Shop Sections
+
+on:
+  schedule:
+    - cron: "17 11 * * 1"     # every Monday about 7:17 am Eastern
+  workflow_dispatch:           # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Refresh section links and counts
+        env:
+          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
+          ETSY_SHARED_SECRET: ${{ secrets.ETSY_SHARED_SECRET }}
+        run: python update_site_sections.py
+      - name: Commit if anything changed
+        run: |
+          git config user.name "analyticollc-bot"
+          git config user.email "analyticollc@gmail.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Weekly shop section refresh"
+          git push
