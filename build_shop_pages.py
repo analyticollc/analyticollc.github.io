@@ -10,7 +10,7 @@ What it writes (inside this website folder):
 Runs every night on GitHub (see .github/workflows/build-shop.yml) with the same two repo secrets
 as the section refresh, ETSY_KEYSTRING and ETSY_SHARED_SECRET. Also runs on your PC:
     python build_shop_pages.py [path\\to\\etsy_tokens.json]
-Read-only: about one Etsy call per 100 listings, no sign-in token, nothing on Etsy changes.
+Read-only: about two Etsy calls per 100 listings, no sign-in token, nothing on Etsy changes.
 The whole shop folder is rebuilt each run, so listings that are no longer active drop off.
 """
 import csv
@@ -57,8 +57,14 @@ def fetch(hdr, log=print):
                 for s in _get(hdr, f"/shops/{SHOP_ID}/sections").get("results", [])}
     out, offset = [], 0
     while True:
-        d = _get(hdr, f"/shops/{SHOP_ID}/listings/active", limit=100, offset=offset, includes="Images")
+        d = _get(hdr, f"/shops/{SHOP_ID}/listings/active", limit=100, offset=offset)
         res = d.get("results") or []
+        # the shop list leaves photos out without a sign-in, so ask for these 100 again with photos
+        ids = ",".join(str(li["listing_id"]) for li in res)
+        withimg = {str(li["listing_id"]): li for li in
+                   (_get(hdr, "/listings/batch", listing_ids=ids, includes="Images").get("results") or [])} if ids else {}
+        for li in res:
+            li["images"] = (withimg.get(str(li["listing_id"])) or {}).get("images") or li.get("images") or []
         out += res
         offset += len(res)
         log(f"  {offset} of {d.get('count', '?')} listings")
@@ -353,6 +359,10 @@ def main():
     listings, sections = fetch(hdr)
     if len(listings) < 100:
         sys.exit(f"Only {len(listings)} listings came back, so nothing was changed (safety stop).")
+    good = sum(1 for li in listings if li.get("images") and price_of(li)[0])
+    if good < len(listings) * 0.5:
+        sys.exit(f"Only {good} of {len(listings)} listings had a photo and price, so nothing was changed "
+                 "(safety stop).")
     build(listings, sections, here)
 
 
