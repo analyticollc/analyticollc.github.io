@@ -1,0 +1,37 @@
+name: Build Shop Pages And ChatGPT Feed
+
+on:
+  schedule:
+    - cron: "23 7 * * *"      # every night about 2:23 am Eastern
+  workflow_dispatch:           # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: site-updates
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Build product pages, sitemap and ChatGPT feed
+        env:
+          ETSY_KEYSTRING: ${{ secrets.ETSY_KEYSTRING }}
+          ETSY_SHARED_SECRET: ${{ secrets.ETSY_SHARED_SECRET }}
+        run: python build_shop_pages.py
+      - name: Commit if anything changed
+        run: |
+          git config user.name "analyticollc-bot"
+          git config user.email "analyticollc@gmail.com"
+          git add -A shop feeds sitemap.xml robots.txt
+          git diff --cached --quiet || git commit -m "Nightly shop pages and ChatGPT feed"
+          git pull --rebase
+          git push
